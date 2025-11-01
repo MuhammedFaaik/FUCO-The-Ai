@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>?? FUCO AI Aggregator</title>
+    <style>
+        /* FUCO Color Theme: Black, Blue, White */
+        :root {
+            --primary-black: #0a0a0a;
+            --dark-black: #1a1a1a;
+            --primary-blue: #2563eb;
+            --light-blue: #3b82f6;
+            --bright-blue: #60a5fa;
+            --pure-white: #ffffff;
+            --light-gray: #f8fafc;
+            --border-gray: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-black) 0%, var(--dark-black) 100%);
+            color: var(--pure-white);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--bright-blue), var(--primary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: var(--bright-blue);
+            font-size: 1.1rem;
+        }
+
+        /* API Key Setup */
+        .api-setup {
+            background: var(--dark-black);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .api-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .api-input-group label {
+            min-width: 120px;
+            color: var(--bright-blue);
+            font-weight: 600;
+        }
+
+        .api-input-group input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            color: var(--pure-white);
+        }
+
+        .api-input-group input:focus {
+            outline: none;
+            border-color: var(--bright-blue);
+        }
+
+        /* Chat Container */
+        .chat-container {
+            background: var(--dark-black);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .chat-header h2 {
+            color: var(--bright-blue);
+        }
+
+        .cost-display {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cost-display span {
+            background: var(--primary-blue);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Chat Messages */
+        .chat-messages {
+            min-height: 100px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .message {
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 10px;
+            background: rgba(37, 99, 235, 0.1);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .message.user {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--bright-blue);
+            margin-left: 20px;
+        }
+
+        /* Input Area */
+        .input-area {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .input-area textarea {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: var(--pure-white);
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 60px;
+            transition: all 0.3s ease;
+        }
+
+        .input-area textarea:focus {
+            outline: none;
+            border-color: var(--bright-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--bright-blue);
+            border: 1px solid var(--bright-blue);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        /* Responses Container */
+        .responses-container {
+            background: var(--dark-black);
+            border-radius: 15px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            overflow: hidden;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
+            background: transparent;
+            border: none;
+            color: var(--bright-blue);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .tab-button:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .tab-button.active {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            padding: 0;
+        }
+
+        .tab-pane {
+            display: none;
+            padding: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        .response-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        /* Individual Response Styles */
+        .response-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .ai-name {
+            font-weight: bold;
+            color: var(--bright-blue);
+        }
+
+        .confidence {
+            background: var(--primary-blue);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .cost {
+            color: #10b981;
+            font-size: 0.9rem;
+        }
+
+        .response-content {
+            line-height: 1.6;
+            color: var(--pure-white);
+            white-space: pre-wrap;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--bright-blue);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Status Indicators */
+        .status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status.connected {
+            background: #10b981;
+            color: white;
+        }
+
+        .status.disconnected {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-blue);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--light-blue);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .input-area {
+                flex-direction: column;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .chat-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .api-input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .api-input-group label {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>?? FUCO AI Aggregator</h1>
+            <p>Smart responses from ChatGPT, Gemini, and DeepSeek - Pure HTML Version</p>
+        </header>
+
+        <!-- API Key Setup -->
+        <div class="api-setup">
+            <h3>?? API Configuration</h3>
+            <div class="api-input-group">
+                <label for="openaiKey">OpenAI Key:</label>
+                <input type="password" id="openaiKey" placeholder="Enter OpenAI API key">
+                <span id="openaiStatus" class="status disconnected">Not Set</span>
+            </div>
+            <div class="api-input-group">
+                <label for="geminiKey">Gemini Key:</label>
+                <input type="password" id="geminiKey" placeholder="Enter Gemini API key">
+                <span id="geminiStatus" class="status disconnected">Not Set</span>
+            </div>
+            <div class="api-input-group">
+                <label for="deepseekKey">DeepSeek Key:</label>
+                <input type="password" id="deepseekKey" placeholder="Enter DeepSeek API key">
+                <span id="deepseekStatus" class="status disconnected">Not Set</span>
+            </div>
+            <button onclick="saveApiKeys()" class="btn-primary">Save API Keys</button>
+            <button onclick="clearApiKeys()" class="btn-secondary">Clear All Keys</button>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>Ask Anything</h2>
+                <div class="cost-display">
+                    <span id="costMetrics">Cost: $0.00</span>
+                    <button onclick="clearHistory()" class="btn-secondary">Clear History</button>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will appear here -->
+            </div>
+
+            <div class="input-area">
+                <textarea id="questionInput" placeholder="Type your question here..." rows="3"></textarea>
+                <button onclick="askQuestion()" id="askButton" class="btn-primary">Ask FUCO</button>
+            </div>
+        </div>
+
+        <!-- Response Display -->
+        <div class="responses-container">
+            <div class="tabs" id="responseTabs">
+                <button class="tab-button active" onclick="switchTab('selected')">Selected Response</button>
+                <button class="tab-button" onclick="switchTab('ensemble')">Ensemble View</button>
+                <button class="tab-button" onclick="switchTab('all')">All Responses</button>
+                <button class="tab-button" onclick="switchTab('history')">Conversation History</button>
+            </div>
+
+            <div class="tab-content">
+                <div id="selected-tab" class="tab-pane active">
+                    <div id="selectedResponse" class="response-box"></div>
+                </div>
+                <div id="ensemble-tab" class="tab-pane">
+                    <div id="ensembleResponse" class="response-box"></div>
+                </div>
+                <div id="all-tab" class="tab-pane">
+                    <div id="allResponses" class="response-box"></div>
+                </div>
+                <div id="history-tab" class="tab-pane">
+                    <div id="conversationHistory" class="response-box"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // FUCO AI Aggregator - Pure JavaScript Version
+        class FUCOAggregator {
+            constructor() {
+                this.conversationHistory = [];
+                this.apiKeys = {
+                    openai: '',
+                    gemini: '',
+                    deepseek: ''
+                };
+                this.loadApiKeys();
+                this.updateApiStatus();
+            }
+
+            // API Key Management
+            loadApiKeys() {
+                try {
+                    const saved = localStorage.getItem('fuco_api_keys');
+                    if (saved) {
+                        this.apiKeys = JSON.parse(saved);
+                    }
+                } catch (e) {
+                    console.error('Error loading API keys:', e);
+                }
+            }
+
+            saveApiKeys(keys) {
+                this.apiKeys = { ...this.apiKeys, ...keys };
+                localStorage.setItem('fuco_api_keys', JSON.stringify(this.apiKeys));
+                this.updateApiStatus();
+            }
+
+            clearApiKeys() {
+                this.apiKeys = { openai: '', gemini: '', deepseek: '' };
+                localStorage.removeItem('fuco_api_keys');
+                this.updateApiStatus();
+            }
+
+            updateApiStatus() {
+                const updateStatus = (elementId, key) => {
+                    const element = document.getElementById(elementId);
+                    if (this.apiKeys[key]) {
+                        element.textContent = 'Connected';
+                        element.className = 'status connected';
+                    } else {
+                        element.textContent = 'Not Set';
+                        element.className = 'status disconnected';
+                    }
+                };
+
+                updateStatus('openaiStatus', 'openai');
+                updateStatus('geminiStatus', 'gemini');
+                updateStatus('deepseekStatus', 'deepseek');
+            }
+
+            // API Calls
+            async callOpenAI(question) {
+                if (!this.apiKeys.openai) {
+                    return { source: 'ChatGPT', response: 'Error: API key not set', confidence: 0, cost: 0 };
+                }
+
+                try {
+                    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${this.apiKeys.openai}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            model: 'gpt-3.5-turbo',
+                            messages: [{ role: 'user', content: question }],
+                            max_tokens: 1000,
+                            temperature: 0.7
+                        })
+                    });
+
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    
+                    const data = await response.json();
+                    return {
+                        source: 'ChatGPT',
+                        response: data.choices[0].message.content,
+                        confidence: 0.9,
+                        cost: question.length / 1000 * 0.0015
+                    };
+                } catch (error) {
+                    return { source: 'ChatGPT', response: `Error: ${error.message}`, confidence: 0, cost: 0 };
+                }
+            }
+
+            async callGemini(question) {
+                if (!this.apiKeys.gemini) {
+                    return { source: 'Gemini', response: 'Error: API key not set', confidence: 0, cost: 0 };
+                }
+
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${this.apiKeys.gemini}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [{ text: question }]
+                            }],
+                            generationConfig: {
+                                maxOutputTokens: 1000,
+                                temperature: 0.7
+                            }
+                        })
+                    });
+
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    
+                    const data = await response.json();
+                    return {
+                        source: 'Gemini',
+                        response: data.candidates[0].content.parts[0].text,
+                        confidence: 0.85,
+                        cost: question.length / 1000 * 0.0005
+                    };
+                } catch (error) {
+                    return { source: 'Gemini', response: `Error: ${error.message}`, confidence: 0, cost: 0 };
+                }
+            }
+
+            async callDeepSeek(question) {
+                if (!this.apiKeys.deepseek) {
+                    return { source: 'DeepSeek', response: 'Error: API key not set', confidence: 0, cost: 0 };
+                }
+
+                try {
+                    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${this.apiKeys.deepseek}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            model: 'deepseek-chat',
+                            messages: [{ role: 'user', content: question }],
+                            max_tokens: 1000,
+                            temperature: 0.7
+                        })
+                    });
+
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    
+                    const data = await response.json();
+                    return {
+                        source: 'DeepSeek',
+                        response: data.choices[0].message.content,
+                        confidence: 0.8,
+                        cost: question.length / 1000 * 0.0001
+                    };
+                } catch (error) {
+                    return { source: 'DeepSeek', response: `Error: ${error.message}`, confidence: 0, cost: 0 };
+                }
+            }
+
+            // Response Processing
+            smartResponseSelection(responses) {
+                const validResponses = responses.filter(r => !r.response.includes('Error:'));
+                
+                if (validResponses.length === 0) {
+                    return {
+                        selected_response: { source: 'FUCO', response: 'All AI services failed. Check API keys.', confidence: 0, cost: 0 },
+                        voting_winner: null,
+                        ensemble_response: 'Unable to get responses from any AI service. Please check your API keys and try again.',
+                        all_responses: responses,
+                        strategy_used: 'fallback'
+                    };
+                }
+
+                // Confidence-based selection
+                const bestConfidence = validResponses.reduce((best, current) => 
+                    current.confidence > best.confidence ? current : best
+                );
+
+                // Ensemble method
+                let ensembleResponse = "--- Combined Insights ---\n\n";
+                validResponses.forEach(resp => {
+                    ensembleResponse += `?? ${resp.source}:\n${resp.response}\n\n`;
+                });
+
+                return {
+                    selected_response: bestConfidence,
+                    voting_winner: null,
+                    ensemble_response: ensembleResponse,
+                    all_responses: responses,
+                    strategy_used: 'confidence-ensemble'
+                };
+            }
+
+            async getAIResponses(question) {
+                const startTime = Date.now();
+
+                // Call all APIs in parallel
+                const [chatgpt, gemini, deepseek] = await Promise.all([
+                    this.callOpenAI(question),
+                    this.callGemini(question),
+                    this.callDeepSeek(question)
+                ]);
+
+                const processingTime = (Date.now() - startTime) / 1000;
+
+                const responses = [chatgpt, gemini, deepseek];
+                const result = this.smartResponseSelection(responses);
+
+                // Add to history
+                const conversationEntry = {
+                    timestamp: Date.now(),
+                    datetime: new Date().toISOString(),
+                    question: question,
+                    responses: result,
+                    processing_time: processingTime
+                };
+
+                this.conversationHistory.push(conversationEntry);
+                if (this.conversationHistory.length > 50) {
+                    this.conversationHistory = this.conversationHistory.slice(-50);
+                }
+
+                this.saveHistory();
+                return result;
+            }
+
+            // History Management
+            saveHistory() {
+                try {
+                    localStorage.setItem('fuco_conversation_history', JSON.stringify(this.conversationHistory));
+                } catch (e) {
+                    console.error('Error saving history:', e);
+                }
+            }
+
+            loadHistory() {
+                try {
+                    const saved = localStorage.getItem('fuco_conversation_history');
+                    if (saved) {
+                        this.conversationHistory = JSON.parse(saved);
+                    }
+                } catch (e) {
+                    console.error('Error loading history:', e);
+                }
+            }
+
+            clearHistory() {
+                this.conversationHistory = [];
+                localStorage.removeItem('fuco_conversation_history');
+            }
+
+            calculateCostMetrics() {
+                let totalCost = 0;
+                let totalTime = 0;
+
+                this.conversationHistory.forEach(conv => {
+                    conv.responses.all_responses.forEach(resp => {
+                        totalCost += resp.cost || 0;
+                    });
+                    totalTime += conv.processing_time || 0;
+                });
+
+                const avgTime = this.conversationHistory.length > 0 ? totalTime / this.conversationHistory.length : 0;
+
+                return {
+                    total_conversations: this.conversationHistory.length,
+                    estimated_total_cost: Math.round(totalCost * 10000) / 10000,
+                    cost_per_conversation: this.conversationHistory.length > 0 ? 
+                        Math.round((totalCost / this.conversationHistory.length) * 10000) / 10000 : 0,
+                    average_processing_time: Math.round(avgTime * 100) / 100
+                };
+            }
+        }
+
+        // Frontend Controller
+        class FUCOFrontend {
+            constructor() {
+                this.aggregator = new FUCOAggregator();
+                this.currentTab = 'selected';
+                this.loadCostMetrics();
+                this.populateApiInputs();
+            }
+
+            populateApiInputs() {
+                document.getElementById('openaiKey').value = this.aggregator.apiKeys.openai || '';
+                document.getElementById('geminiKey').value = this.aggregator.apiKeys.gemini || '';
+                document.getElementById('deepseekKey').value = this.aggregator.apiKeys.deepseek || '';
+            }
+
+            saveApiKeys() {
+                const keys = {
+                    openai: document.getElementById('openaiKey').value.trim(),
+                    gemini: document.getElementById('geminiKey').value.trim(),
+                    deepseek: document.getElementById('deepseekKey').value.trim()
+                };
+                this.aggregator.saveApiKeys(keys);
+                alert('API keys saved successfully!');
+            }
+
+            clearApiKeys() {
+                if (confirm('Are you sure you want to clear all API keys?')) {
+                    this.aggregator.clearApiKeys();
+                    this.populateApiInputs();
+                    alert('API keys cleared!');
+                }
+            }
+
+            async askQuestion() {
+                const questionInput = document.getElementById('questionInput');
+                const askButton = document.getElementById('askButton');
+                const question = questionInput.value.trim();
+
+                if (!question) {
+                    alert('Please enter a question');
+                    return;
+                }
+
+                // Check if any API keys are set
+                const hasKeys = Object.values(this.aggregator.apiKeys).some(key => key);
+                if (!hasKeys) {
+                    alert('Please set at least one API key first!');
+                    return;
+                }
+
+                // Disable button and show loading
+                askButton.disabled = true;
+                askButton.innerHTML = '<div class="loading"></div> Asking...';
+
+                // Add user message to chat
+                this.addMessage(question, 'user');
+
+                try {
+                    const result = await this.aggregator.getAIResponses(question);
+                    this.displayResults(result);
+                    this.loadCostMetrics();
+                } catch (error) {
+                    this.addMessage(`Error: ${error.message}`, 'error');
+                } finally {
+                    // Re-enable button
+                    askButton.disabled = false;
+                    askButton.textContent = 'Ask FUCO';
+                    questionInput.value = '';
+                }
+            }
+
+            addMessage(content, type = 'ai') {
+                const chatMessages = document.getElementById('chatMessages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}`;
+                
+                if (type === 'user') {
+                    messageDiv.innerHTML = `<strong>You:</strong> ${this.escapeHtml(content)}`;
+                } else if (type === 'error') {
+                    messageDiv.innerHTML = `<strong>Error:</strong> ${this.escapeHtml(content)}`;
+                    messageDiv.style.borderLeftColor = '#ef4444';
+                } else {
+                    messageDiv.innerHTML = `<strong>FUCO:</strong> ${this.escapeHtml(content)}`;
+                }
+                
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            displayResults(result) {
+                // Display selected response
+                const selectedResponse = document.getElementById('selectedResponse');
+                selectedResponse.innerHTML = this.formatSelectedResponse(result.selected_response);
+
+                // Display ensemble response
+                const ensembleResponse = document.getElementById('ensembleResponse');
+                ensembleResponse.innerHTML = this.formatEnsembleResponse(result.ensemble_response);
+
+                // Display all responses
+                const allResponses = document.getElementById('allResponses');
+                allResponses.innerHTML = this.formatAllResponses(result.all_responses);
+
+                // Switch to selected tab
+                this.switchTab('selected');
+            }
+
+            formatSelectedResponse(response) {
+                return `
+                    <div class="response-item">
+                        <div class="response-header">
+                            <span class="ai-name">${response.source} ??</span>
+                            <span class="confidence">Confidence: ${(response.confidence * 100).toFixed(1)}%</span>
+                        </div>
+                        <div class="response-content">
+                            ${this.formatText(response.response)}
+                        </div>
+                        <div class="cost">Cost: $${response.cost.toFixed(4)}</div>
+                    </div>
+                `;
+            }
+
+            formatEnsembleResponse(response) {
+                return `
+                    <div class="response-item">
+                        <div class="response-header">
+                            <span class="ai-name">?? Ensemble Intelligence</span>
+                            <span class="confidence">Combined View</span>
+                        </div>
+                        <div class="response-content">
+                            ${this.formatText(response)}
+                        </div>
+                    </div>
+                `;
+            }
+
+            formatAllResponses(responses) {
+                return responses.map(response => `
+                    <div class="response-item">
+                        <div class="response-header">
+                            <span class="ai-name">${response.source}</span>
+                            <span class="confidence">${(response.confidence * 100).toFixed(1)}%</span>
+                        </div>
+                        <div class="response-content">
+                            ${this.formatText(response.response)}
+                        </div>
+                        <div class="cost">Cost: $${response.cost.toFixed(4)}</div>
+                    </div>
+                `).join('');
+            }
+
+            formatText(text) {
+                return this.escapeHtml(text).replace(/\n/g, '<br>');
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            switchTab(tabName) {
+                // Update tab buttons
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+
+                // Update tab panes
+                document.querySelectorAll('.tab-pane').forEach(pane => {
+                    pane.classList.remove('active');
+                });
+                document.getElementById(`${tabName}-tab`).classList.add('active');
+
+                this.currentTab = tabName;
+
+                // Load history if needed
+                if (tabName === 'history') {
+                    this.loadConversationHistory();
+                }
+            }
+
+            loadConversationHistory() {
+                this.aggregator.loadHistory();
+                const historyContainer = document.getElementById('conversationHistory');
+                const costMetrics = this.aggregator.calculateCostMetrics();
+                historyContainer.innerHTML = this.formatHistory(this.aggregator.conversationHistory, costMetrics);
+            }
+
+            formatHistory(history, costMetrics) {
+                if (history.length === 0) {
+                    return '<div class="response-item">No conversation history yet.</div>';
+                }
+
+                let html = `
+                    <div class="response-item" style="background: rgba(34, 197, 94, 0.1); border-left: 4px solid #22c55e;">
+                        <div class="response-header">
+                            <span class="ai-name">?? Cost Analytics</span>
+                        </div>
+                        <div class="response-content">
+                            Total Conversations: ${costMetrics.total_conversations}<br>
+                            Estimated Total Cost: $${costMetrics.estimated_total_cost}<br>
+                            Average Cost per Conversation: $${costMetrics.cost_per_conversation}<br>
+                            Average Processing Time: ${costMetrics.average_processing_time}s
+                        </div>
+                    </div>
+                `;
+
+                history.slice().reverse().forEach(conv => {
+                    const date = new Date(conv.timestamp).toLocaleString();
+                    html += `
+                        <div class="response-item">
+                            <div class="response-header">
+                                <span class="ai-name">??? Conversation</span>
+                                <span class="confidence">${date}</span>
+                            </div>
+                            <div class="response-content">
+                                <strong>Question:</strong> ${this.escapeHtml(conv.question)}<br><br>
+                                <strong>Processing Time:</strong> ${conv.processing_time.toFixed(2)}s<br>
+                                <strong>Strategy:</strong> ${conv.responses.strategy_used}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                return html;
+            }
+
+            loadCostMetrics() {
+                const costMetrics = this.aggregator.calculateCostMetrics();
+                const costElement = document.getElementById('costMetrics');
+                costElement.textContent = `Cost: $${costMetrics.estimated_total_cost}`;
+            }
+
+            clearHistory() {
+                if (confirm('Are you sure you want to clear all conversation history?')) {
+                    this.aggregator.clearHistory();
+                    this.loadCostMetrics();
+                    if (this.currentTab === 'history') {
+                        this.loadConversationHistory();
+                    }
+                    document.getElementById('chatMessages').innerHTML = '';
+                }
+            }
+        }
+
+        // Initialize the frontend
+        const fuco = new FUCOFrontend();
+
+        // Global functions for HTML onclick
+        function askQuestion() {
+            fuco.askQuestion();
+        }
+
+        function switchTab(tabName) {
+            fuco.switchTab(tabName);
+        }
+
+        function clearHistory() {
+            fuco.clearHistory();
+        }
+
+        function saveApiKeys() {
+            fuco.saveApiKeys();
+        }
+
+        function clearApiKeys() {
+            fuco.clearApiKeys();
+        }
+
+        // Enter key support
+        document.getElementById('questionInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                askQuestion();
+            }
+        });
+
+        // Load initial history if on history tab
+        document.addEventListener('DOMContentLoaded', function() {
+            if (fuco.currentTab === 'history') {
+                fuco.loadConversationHistory();
+            }
+        });
+    </script>
+</body>
+</html>
